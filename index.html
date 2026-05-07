@@ -1,16 +1,24 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- 网页编码：UTF-8，防止中文乱码 -->
     <meta charset="UTF-8" />
+    <!-- 浏览器标签栏的小图标 -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- 自适应手机/电脑屏幕 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 浏览器标签页显示的标题（在线考试系统） -->
     <title>Online Examination System Development</title>
+    <!-- 下面这4行都是社交分享用的，和项目无关，直接忽略！ 
     <meta property="og:image" content="https://bolt.new/static/og_default.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://bolt.new/static/og_default.png" />
+    -->
   </head>
   <body>
+    <!-- 1. 核心容器：React 把整个考试系统都渲染在这里 -->
     <div id="root"></div>
+    <!-- 2. 入口脚本：加载 React 主代码 -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

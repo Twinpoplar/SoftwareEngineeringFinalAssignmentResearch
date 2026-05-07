@@ -36,7 +36,9 @@ app.use('/api/question-bank', questionBankRoutes); // 独立题库路由
 app.use('/api/exam-questions', examQuestionRoutes); // 考试题目关联路由
 app.use('/api/tiku-adapter', tikuAdapterRoutes); // tikuAdapter 代理路由
 app.use('/api/uploads', uploadRoutes);
-app.use(/^\/api\/users(\/|$)/, userRoutes);
+
+//app.use(/^\/api\/users(\/|$)/, userRoutes); 管理员无法删除人员
+app.use('/api/users', userRoutes);
 app.use('/api/attempts', attemptRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 

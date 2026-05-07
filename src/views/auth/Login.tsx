@@ -1,8 +1,13 @@
+// 图标、接口、状态管理、组件...
+//管页面状态（切换登录 / 注册、显示密码）
 import { useState } from 'react';
+//登录成功跳页面
 import { useNavigate } from 'react-router-dom';
+//表单验证（不用自己写 if 判断）
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+
 import { GraduationCap, Eye, EyeOff, User, BookOpen } from 'lucide-react';
 import { signIn, signUp, getProfile } from '../../api/auth';
 import { isAdminLogin, adminSignIn } from '../../api/adminAuth';
