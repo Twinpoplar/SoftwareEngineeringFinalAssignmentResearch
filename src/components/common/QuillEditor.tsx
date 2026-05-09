@@ -56,10 +56,11 @@ export const QuillEditor = forwardRef<QuillEditorHandle, QuillEditorProps>(funct
 
   const toolbarModules = useMemo(() => {
     const base = [
-      [{ header: [1, 2, false] }],
+      [{ header: [1, 2, 3, false] }],
       ['bold', 'italic', 'underline', 'strike'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'formula', 'image'],
+      //[{ list: 'ordered' }, { list: 'bullet' }],去掉多余排版功能
+      //['link', 'formula', 'image'],
+      ['formula', 'image'],
       ['clean'],
     ];
 
@@ -148,9 +149,15 @@ export const QuillEditor = forwardRef<QuillEditorHandle, QuillEditorProps>(funct
       const handlePaste = pasteHandlerRef.current;
       if (quill && handlePaste) quill.root.removeEventListener('paste', handlePaste as unknown as EventListener);
       pasteHandlerRef.current = null;
+      //quillRef.current = null;改前代码
+      // 只有当 disposed 为 true 且不是 Strict Mode 的双次调用时才清理
+      if (containerRef.current && disposed) {
+        containerRef.current.innerHTML = '';
+      }
       quillRef.current = null;
-    };
-  }, [handleUploadFile, onChange, placeholder, toolbarModules, uploadImage, value]);
+};
+//  }, [handleUploadFile, onChange, placeholder, toolbarModules, uploadImage, value]);改前代码
+    }, []);
 
   useEffect(() => {
     const quill = quillRef.current;
@@ -168,7 +175,8 @@ export const QuillEditor = forwardRef<QuillEditorHandle, QuillEditorProps>(funct
   }, [value]);
 
   return (
-    <div className="rounded-xl border border-gray-200 overflow-hidden">
+    //<div className="rounded-xl border border-gray-200 overflow-hidden">修复切换标题遮挡
+    <div className="rounded-xl border border-gray-200">
       <input
         ref={fileInputRef}
         type="file"
