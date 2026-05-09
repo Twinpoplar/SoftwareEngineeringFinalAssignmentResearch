@@ -360,12 +360,12 @@ export default function QuestionBank() {
           icon={<BookOpen className="h-6 w-6" />}
           action={
             <div className="flex flex-wrap gap-3">
-              <Button variant="outline" icon={<Download className="h-4 w-4" />} onClick={handleExport}>
+              {/*<Button variant="outline" icon={<Download className="h-4 w-4" />} onClick={handleExport}>
                 导出题目
               </Button>
               <Button variant="outline" icon={<Upload className="h-4 w-4" />} onClick={() => setIsAdapterOpen(true)}>
                 题库适配器
-              </Button>
+              </Button>*/}
               <Button icon={<Plus className="h-4 w-4" />} onClick={openCreateModal}>
                 新建题目
               </Button>

@@ -243,9 +243,9 @@ export default function ExamManagement() {
           icon={<GraduationCap className="w-6 h-6" />}
           action={
             <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setShowStats(!showStats)} icon={<BarChart3 className="w-4 h-4" />}>
+              {/*<Button variant="outline" onClick={() => setShowStats(!showStats)} icon={<BarChart3 className="w-4 h-4" />}>
                 统计面板
-              </Button>
+              </Button>*/}
               <Button onClick={openCreate} icon={<Plus className="w-4 h-4" />}>
                 新建考试
               </Button>
