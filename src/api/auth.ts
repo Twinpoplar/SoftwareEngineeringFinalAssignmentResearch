@@ -1,3 +1,4 @@
+//登录、注册、获取个人信息
 import type { Profile } from '../types';
 
 const API_URL = 'http://localhost:3000/api/auth';

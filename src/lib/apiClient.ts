@@ -1,3 +1,4 @@
+//全局 HTTP 工具
 const API_BASE_URL = 'http://localhost:3000/api';
 
 let currentToken: string | null = null;

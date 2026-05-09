@@ -1,3 +1,7 @@
+/**
+ * 用户信息、token、登录状态
+ * Zustand + persist：刷新不丢失
+ */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { setApiToken } from '../lib/apiClient';
@@ -13,6 +17,7 @@ interface AuthState {
   logout: () => void;
 }
 
+//在任何组件里调用，都能拿到同一个用户信息
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({

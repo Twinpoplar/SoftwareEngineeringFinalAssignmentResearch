@@ -1,3 +1,7 @@
+/**
+ * Toast 弹窗列表
+ * 全局 UI 状态
+ */
 import { create } from 'zustand';
 
 interface Toast {

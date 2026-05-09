@@ -1,3 +1,7 @@
+/**
+ * 当前考试的所有状态
+ * 只在考试期间使用，交卷后清空
+ */
 import { create } from 'zustand';
 import type { Exam, Question, ExamAttempt, AttemptAnswer } from '../types';
 
