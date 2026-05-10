@@ -16,7 +16,9 @@ import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
 import type { Question, AttemptAnswer } from '../../types';
 
-const ReactQuill = lazy(() => import('react-quill'));
+//const ReactQuill = lazy(() => import('react-quill'));
+//修考试界面打不开的bug
+import ReactQuill from 'react-quill';
 
 import 'react-quill/dist/quill.snow.css';
 
