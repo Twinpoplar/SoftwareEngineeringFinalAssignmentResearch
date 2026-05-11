@@ -5,12 +5,26 @@ import { Exam } from '../models/Exam';
 import { ExamQuestion } from '../models/ExamQuestion';
 
 const router = express.Router();
-const MIN_SUBMIT_SECONDS = 60;
 const normalizeChoice = (v: unknown) => String(v ?? '').trim().toUpperCase();
 const normalizeTrueFalse = (v: unknown): 'true' | 'false' => {
   const s = String(v ?? '').trim().toLowerCase();
   if (['true', '1', 'yes', 'y', '对', '正确', '是'].includes(s)) return 'true';
   return 'false';
+};
+
+// HTML 剥离并标准化文本
+const stripHtml = (html: string): string => {
+  if (typeof html !== 'string') return '';
+  // 移除 HTML 标签
+  let text = html.replace(/<[^>]*>/g, '');
+  // 移除多余的空格和换行
+  text = text.replace(/\s+/g, ' ').trim();
+  return text;
+};
+
+// 归一化文本用于对比
+const normalizeText = (text: string): string => {
+  return stripHtml(text).toLowerCase();
 };
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 const getDocId = (v: unknown) => {
@@ -243,12 +257,6 @@ router.put('/:id/submit', auth, async (req: AuthRequest, res) => {
     const exam = await Exam.findById(attempt.exam_id);
     if (!exam) return res.status(404).json({ error: '找不到相关考试' });
 
-    const startedAtMs = new Date(attempt.started_at).getTime();
-    const elapsedSeconds = Math.floor((Date.now() - startedAtMs) / 1000);
-    if (elapsedSeconds < MIN_SUBMIT_SECONDS) {
-      return res.status(400).json({ error: `最短提交时间不得小于1分钟（当前 ${Math.max(0, elapsedSeconds)} 秒）` });
-    }
-
     // 获取该考试的所有题目并计算分数
     const examQuestions = await ExamQuestion.find({ exam_id: attempt.exam_id }).populate('question_id');
     const questionMap = new Map<
@@ -314,6 +322,20 @@ router.put('/:id/submit', auth, async (req: AuthRequest, res) => {
         else if (q.type === 'short_answer') {
           needsManualGrading = true;
           ans.score = 0; // 初始给0分
+
+          // 对简答题答案进行 HTML 剥离和标准化比较
+          const studentAnswerText = normalizeText(ans.answer_text || String(ans.answer));
+          const correctAnswerText = normalizeText(String(q.correct_answer));
+
+          if (studentAnswerText === correctAnswerText) {
+            ans.is_correct = true;
+            ans.score = q.points;
+            totalScore += q.points;
+            needsManualGrading = false; // 自动匹配则无需手动批改
+          } else {
+            ans.is_correct = false;
+            ans.score = 0;
+          }
         }
       }
     }

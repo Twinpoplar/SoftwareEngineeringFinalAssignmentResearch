@@ -2,7 +2,7 @@ import { signIn } from './auth';
 
 // 检查是否是管理员账号登录
 export function isAdminLogin(email: string, password: string): boolean {
-  return email === 'admin' && password === 'TestAdmin123';
+  return email === 'admin' && password === '123456';
 }
 
 // 创建或更新管理员账号 
@@ -14,5 +14,5 @@ export async function setupAdminAccount() {
 // 管理员登录
 export async function adminSignIn() {
   // 直接调用后端的登录接口，后端已经有admin数据
-  return await signIn('admin', 'TestAdmin123');
+  return await signIn('admin', '123456');
 }

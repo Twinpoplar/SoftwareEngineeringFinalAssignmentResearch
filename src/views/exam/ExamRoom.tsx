@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { lazy } from 'react';
 import {
   ChevronLeft, ChevronRight, Flag, Send, AlertTriangle,
   Monitor, Save, BookOpen, Maximize, Minimize,
@@ -15,12 +14,6 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { Modal } from '../../components/common/Modal';
 import { Button } from '../../components/common/Button';
 import type { Question, AttemptAnswer } from '../../types';
-
-//const ReactQuill = lazy(() => import('react-quill'));
-//修考试界面打不开的bug
-import ReactQuill from 'react-quill';
-
-import 'react-quill/dist/quill.snow.css';
 
 const TYPE_LABELS = {
   single_choice: '单选题',
@@ -138,14 +131,7 @@ function QuestionCard({
   onAnswer: (value: string | string[]) => void;
   onFlag: () => void;
 }) {
-  const [quillValue, setQuillValue] = useState('');
   const isFlagged = answer?.is_flagged ?? false;
-
-  useEffect(() => {
-    if (question.type === 'short_answer') {
-      setQuillValue(typeof answer?.answer === 'string' ? answer.answer : '');
-    }
-  }, [answer, question.type]);
 
   const handleSingleChoice = (key: string) => onAnswer(key);
 
@@ -155,22 +141,8 @@ function QuestionCard({
     onAnswer(updated);
   };
 
-  const handleShortAnswer = (value: string) => {
-    setQuillValue(value);
-    onAnswer(value);
-  };
-
   const currentSingle = typeof answer?.answer === 'string' ? answer.answer : '';
   const currentMultiple = Array.isArray(answer?.answer) ? (answer!.answer as string[]) : [];
-
-  const modules = {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 h-full flex flex-col">
@@ -291,13 +263,12 @@ function QuestionCard({
 
       {question.type === 'short_answer' && (
         <div className="space-y-4">
-          <ReactQuill
-            theme="snow"
-            value={quillValue}
-            onChange={handleShortAnswer}
-            modules={modules}
-            className="bg-white rounded-xl border-2 border-gray-100 focus-within:border-blue-400 transition-colors"
-            placeholder="请输入你的答案，可使用上方格式工具"
+          <textarea
+            value={typeof answer?.answer === 'string' ? answer.answer : ''}
+            onChange={(e) => onAnswer(e.target.value)}
+            placeholder="请输入你的答案"
+            className="w-full min-h-[200px] p-4 rounded-xl border-2 border-gray-100 focus-within:border-blue-400 focus:outline-none transition-colors resize-y"
+            rows={8}
           />
           <div className="text-xs text-gray-400 flex items-center gap-2">
             <Save className="w-3 h-3" />
@@ -330,16 +301,7 @@ export default function ExamRoom() {
     (attempt as unknown as { id?: string; _id?: string })?.id ??
     (attempt as unknown as { id?: string; _id?: string })?._id ??
     '';
-  const attemptStartedAt =
-    (attempt as unknown as { started_at?: string; created_at?: string })?.started_at ??
-    (attempt as unknown as { started_at?: string; created_at?: string })?.created_at ??
-    '';
-  const canSubmitNow = (() => {
-    if (!attemptStartedAt) return false;
-    const startMs = new Date(String(attemptStartedAt)).getTime();
-    if (!Number.isFinite(startMs)) return false;
-    return Date.now() - startMs >= 60_000;
-  })();
+  const canSubmitNow = !!attemptIdValue;
 
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -492,11 +454,7 @@ export default function ExamRoom() {
 
   const handleSubmit = useCallback(async () => {
     if (!attemptIdValue) return;
-    if (!canSubmitNow) {
-      toast.warning('最短提交时间不得小于1分钟');
-      return;
-    }
-    
+
     setIsSubmitting(true);
     try {
       await submitExam(attemptIdValue);
@@ -507,7 +465,7 @@ export default function ExamRoom() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [attemptIdValue, canSubmitNow, navigate, setIsSubmitting, submitExam, toast]);
+  }, [attemptIdValue, navigate, setIsSubmitting, submitExam, toast]);
 
   const handleTimeExpire = useCallback(() => {
     toast.warning('考试时间已到，正在自动交卷...');

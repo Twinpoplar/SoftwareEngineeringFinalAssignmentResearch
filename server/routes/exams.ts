@@ -103,9 +103,11 @@ router.get('/:id', auth, async (req: AuthRequest, res) => {
       delete (normalized as Record<string, unknown>).__v;
       return normalized;
     });
-    
-    // 如果是学生，隐藏正确答案
-    if (req.user?.role === 'student') {
+
+    // 如果是学生，且没有 includeAnswers 参数，隐藏正确答案
+    // includeAnswers 参数用于成绩回顾时显示正确答案
+    const includeAnswers = req.query.includeAnswers === 'true';
+    if (req.user?.role === 'student' && !includeAnswers) {
       questions.forEach(q => {
         delete q.correct_answer;
         delete q.explanation;

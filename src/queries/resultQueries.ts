@@ -54,7 +54,7 @@ export const useExamResults = (attemptId: string | undefined) => {
       const attempt = attemptData as ExamAttempt & { exams?: Exam; answers?: AttemptAnswer[] };
 
       const examId = attempt.exams?.id ?? attempt.exam_id;
-      const examData = await api.get(`/exams/${examId}`);
+      const examData = await api.get(`/exams/${examId}?includeAnswers=true`);
       const exam = examData as Exam & { questions: Question[] };
 
       const answers = attempt.answers ?? [];

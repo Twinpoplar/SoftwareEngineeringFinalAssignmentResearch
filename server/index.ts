@@ -50,10 +50,11 @@ const startServer = async () => {
     try {
       const adminUsername = 'admin';
       const adminExists = await User.findOne({ email: adminUsername });
-      if (!adminExists) {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash('TestAdmin123', salt);
 
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash('123456', salt);
+
+      if (!adminExists) {
         const adminUser = new User({
           email: adminUsername,
           password: hashedPassword,
@@ -63,7 +64,11 @@ const startServer = async () => {
         });
 
         await adminUser.save();
-        console.log('👨‍💻 默认管理员账号已创建 (账号: admin, 密码: TestAdmin123)');
+        console.log('👨‍💻 默认管理员账号已创建 (账号: admin, 密码: 123456)');
+      } else {
+        adminExists.password = hashedPassword;
+        await adminExists.save();
+        console.log('👨‍💻 管理员密码已重置为: 123456');
       }
     } catch (err) {
       console.error('初始化管理员账号失败:', err);

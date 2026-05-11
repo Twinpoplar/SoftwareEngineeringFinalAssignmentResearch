@@ -635,9 +635,6 @@ export default function QuestionBank() {
                     className={inputClassName}
                     placeholder={`选项 ${option.key}`}
                   />
-                  <Button variant="outline" size="sm" onClick={() => openLatexModal(index)}>
-                    LaTeX
-                  </Button>
                   <Button
                     variant="outline"
                     size="sm"

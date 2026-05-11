@@ -108,6 +108,20 @@ router.post('/', auth, async (req, res) => {
       tags
     } = req.body;
 
+    // HTML 剥离并标准化文本
+    const stripHtml = (html: string): string => {
+      if (typeof html !== 'string') return '';
+      let text = html.replace(/<[^>]*>/g, '');
+      text = text.replace(/\s+/g, ' ').trim();
+      return text;
+    };
+
+    // 对简答题答案进行 HTML 清洗
+    let finalCorrectAnswer = correct_answer;
+    if (type === 'short_answer' && correct_answer) {
+      finalCorrectAnswer = stripHtml(String(correct_answer));
+    }
+
     // 验证必填字段
     if (!type || !content || !correct_answer || !subject) {
       return res.status(400).json({ error: '请填写所有必填字段' });
@@ -127,7 +141,7 @@ router.post('/', auth, async (req, res) => {
       content,
       points: points || 5,
       explanation,
-      correct_answer,
+      correct_answer: finalCorrectAnswer,
       subject,
       difficulty: difficulty || 'medium',
       options: options || [],

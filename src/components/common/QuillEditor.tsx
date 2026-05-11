@@ -60,7 +60,7 @@ export const QuillEditor = forwardRef<QuillEditorHandle, QuillEditorProps>(funct
       ['bold', 'italic', 'underline', 'strike'],
       //[{ list: 'ordered' }, { list: 'bullet' }],去掉多余排版功能
       //['link', 'formula', 'image'],
-      ['formula', 'image'],
+      ['image'],
       ['clean'],
     ];
 
