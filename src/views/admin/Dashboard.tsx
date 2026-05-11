@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, FileText, Users, BarChart3, TrendingUp, Clock, ArrowRight } from 'lucide-react';
+import { GraduationCap, FileText, BarChart3, Clock, ArrowRight } from 'lucide-react';
 import dayjs from 'dayjs';
 import { api } from '../../lib/apiClient';
 import { useAuthStore } from '../../stores/authStore';
@@ -11,8 +11,6 @@ import type { Exam, ExamAttempt } from '../../types';
 interface Stats {
   totalExams: number;
   activeExams: number;
-  totalAttempts: number;
-  avgScore: number;
 }
 
 type AttemptWithExam = ExamAttempt & { exams: Exam; profiles: { full_name: string; email: string } };
@@ -21,7 +19,7 @@ type DashboardSummary = { stats: Stats; recentAttempts: AttemptWithExam[]; recen
 export default function Dashboard() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [stats, setStats] = useState<Stats>({ totalExams: 0, activeExams: 0, totalAttempts: 0, avgScore: 0 });
+  const [stats, setStats] = useState<Stats>({ totalExams: 0, activeExams: 0 });
   const [recentAttempts, setRecentAttempts] = useState<AttemptWithExam[]>([]);
   const [recentExams, setRecentExams] = useState<Exam[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,8 +43,6 @@ export default function Dashboard() {
   const statCards = [
     { label: '考试总数', value: stats.totalExams, icon: <GraduationCap className="w-6 h-6" />, color: 'bg-blue-50 text-blue-600', change: '' },
     { label: '进行中考试', value: stats.activeExams, icon: <Clock className="w-6 h-6" />, color: 'bg-emerald-50 text-emerald-600', change: '' },
-    { label: '已提交次数', value: stats.totalAttempts, icon: <Users className="w-6 h-6" />, color: 'bg-amber-50 text-amber-600', change: '' },
-    { label: '平均分', value: `${stats.avgScore}`, icon: <TrendingUp className="w-6 h-6" />, color: 'bg-rose-50 text-rose-600', change: '分' },
   ];
 
   if (isLoading) return <LoadingSpinner text="正在加载仪表盘..." fullScreen />;
@@ -60,7 +56,7 @@ export default function Dashboard() {
           icon={<BarChart3 className="w-6 h-6" />}
         />
 
-        <div className="grid grid-cols-4 gap-5 mb-8">
+        <div className="grid grid-cols-2 gap-5 mb-8">
           {statCards.map((card) => (
             <div key={card.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
               <div className="flex items-center justify-between mb-4">

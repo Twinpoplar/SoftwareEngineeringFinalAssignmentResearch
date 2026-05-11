@@ -92,8 +92,6 @@ router.get('/summary', auth, authorize(['teacher', 'admin']), async (req: AuthRe
       stats: {
         totalExams: exams.length,
         activeExams: activeExams.length,
-        totalAttempts: submittedAttempts.length,
-        avgScore,
       },
       recentExams: exams.slice(0, 5),
       recentAttempts,
