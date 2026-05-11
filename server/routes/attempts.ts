@@ -274,7 +274,7 @@ router.put('/:id/submit', auth, async (req: AuthRequest, res) => {
         points: eq.points,
       });
     });
-    
+
     let totalScore = 0;
     let needsManualGrading = false;
 
@@ -308,7 +308,7 @@ router.put('/:id/submit', auth, async (req: AuthRequest, res) => {
           const ansArr = Array.isArray(ans.answer) ? ans.answer : [ans.answer];
           const normCorrect = Array.from(new Set(correctArr.map(normalizeChoice))).sort();
           const normAns = Array.from(new Set(ansArr.map(normalizeChoice))).sort();
-          
+
           if (normCorrect.length === normAns.length && normCorrect.every((v, i) => v === normAns[i])) {
             ans.is_correct = true;
             ans.score = q.points;

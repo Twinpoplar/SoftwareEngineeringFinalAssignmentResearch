@@ -460,8 +460,9 @@ export default function ExamRoom() {
       await submitExam(attemptIdValue);
       toast.success('交卷成功');
       navigate(`/results/${attemptIdValue}`);
-    } catch {
-      toast.error('交卷失败');
+    } catch (error) {
+      console.error('交卷失败:', error);
+      toast.error('交卷失败: ' + (error as Error).message);
     } finally {
       setIsSubmitting(false);
     }

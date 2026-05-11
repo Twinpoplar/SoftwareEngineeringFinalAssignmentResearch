@@ -9,7 +9,11 @@ export const setApiToken = (token: string | null) => {
 
 export const apiFetch = async <T = unknown>(endpoint: string, options: RequestInit = {}) => {
   const headers = new Headers(options.headers);
-  headers.set('Content-Type', 'application/json');
+
+  // 只在有 body 时设置 Content-Type
+  if (options.body) {
+    headers.set('Content-Type', 'application/json');
+  }
 
   if (currentToken) {
     headers.set('Authorization', `Bearer ${currentToken}`);
@@ -33,8 +37,8 @@ export const apiFetch = async <T = unknown>(endpoint: string, options: RequestIn
 
 export const api = {
   get: <T = unknown>(endpoint: string) => apiFetch<T>(endpoint),
-  post: <T = unknown>(endpoint: string, data: unknown) => apiFetch<T>(endpoint, { method: 'POST', body: JSON.stringify(data) }),
-  put: <T = unknown>(endpoint: string, data: unknown) => apiFetch<T>(endpoint, { method: 'PUT', body: JSON.stringify(data) }),
-  patch: <T = unknown>(endpoint: string, data: unknown) => apiFetch<T>(endpoint, { method: 'PATCH', body: JSON.stringify(data) }),
+  post: <T = unknown>(endpoint: string, data?: unknown) => apiFetch<T>(endpoint, { method: 'POST', body: data ? JSON.stringify(data) : undefined }),
+  put: <T = unknown>(endpoint: string, data?: unknown) => apiFetch<T>(endpoint, { method: 'PUT', body: data ? JSON.stringify(data) : undefined }),
+  patch: <T = unknown>(endpoint: string, data?: unknown) => apiFetch<T>(endpoint, { method: 'PATCH', body: data ? JSON.stringify(data) : undefined }),
   delete: <T = unknown>(endpoint: string) => apiFetch<T>(endpoint, { method: 'DELETE' }),
 };

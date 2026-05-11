@@ -167,7 +167,7 @@ export const useSubmitExam = () => {
 
   return useMutation({
     mutationFn: async (attemptId: string) => {
-      const data = await api.put(`/attempts/${attemptId}/submit`, {});
+      const data = await api.put(`/attempts/${attemptId}/submit`);
       return data as ExamAttempt;
     },
     onSuccess: () => {
