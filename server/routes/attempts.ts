@@ -200,7 +200,7 @@ router.get('/:id', auth, async (req: AuthRequest, res) => {
     }
 
     const attemptObj = attempt as unknown as Record<string, unknown>;
-    if (attemptObj.student_id !== req.user!.id && req.user!.role === 'student') {
+    if (String(attemptObj.student_id) !== req.user!.id && req.user!.role === 'student') {
       return res.status(403).json({ error: '没有权限' });
     }
 
@@ -225,7 +225,7 @@ router.post('/:id/answer', auth, async (req: AuthRequest, res) => {
     
     const attempt = await ExamAttempt.findById(id);
     if (!attempt) return res.status(404).json({ error: '找不到考试记录' });
-    if (attempt.student_id !== req.user!.id) return res.status(403).json({ error: '没有权限' });
+    if (String(attempt.student_id) !== req.user!.id) return res.status(403).json({ error: '没有权限' });
     if (attempt.status !== 'in_progress') return res.status(400).json({ error: '考试已结束，无法提交答案' });
 
     // 查找该题目是否已经答过
@@ -251,7 +251,7 @@ router.put('/:id/submit', auth, async (req: AuthRequest, res) => {
   try {
     const attempt = await ExamAttempt.findById(req.params.id);
     if (!attempt) return res.status(404).json({ error: '找不到考试记录' });
-    if (attempt.student_id !== req.user!.id) return res.status(403).json({ error: '没有权限' });
+    if (String(attempt.student_id) !== req.user!.id) return res.status(403).json({ error: '没有权限' });
     if (attempt.status !== 'in_progress') return res.status(400).json({ error: '考试已交卷' });
 
     const exam = await Exam.findById(attempt.exam_id);
